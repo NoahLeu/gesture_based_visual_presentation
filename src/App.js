@@ -44,8 +44,10 @@ const GestureDetectionApp = () => {
 						transform: "rotateY(180deg)",
 					}}
 					ref={canvasRef}
-					width={window.innerWidth / 2}
-					height={window.innerHeight / 2}
+					width={videoRef.current ? videoRef.current.clientWidth : 0}
+					height={videoRef.current ? videoRef.current.clientHeight : 0}
+					// width={document && document.getElementById("webcam").offsetWidth}
+					// height={ document ? document.getElementById("webcam").offsetHeight : window.innerHeight / 2}
 				></canvas>
 			</div>
 

@@ -5,6 +5,74 @@ import {
 } from "@mediapipe/tasks-vision";
 import { useEffect, useRef, useState } from "react";
 
+function calculateNormalVector(point1, point2, point3) {
+	const vector1 = {
+		x: point1.x - point2.x,
+		y: point1.y - point2.y,
+		z: point1.z - point2.z,
+	};
+	const vector2 = {
+		x: point3.x - point2.x,
+		y: point3.y - point2.y,
+		z: point3.z - point2.z,
+	};
+
+	const normalVector = {
+		x: vector1.y * vector2.z - vector1.z * vector2.y,
+		y: vector1.z * vector2.x - vector1.x * vector2.z,
+		z: vector1.x * vector2.y - vector1.y * vector2.x,
+	};
+
+	return normalVector;
+}
+
+function calculateCenterPoint(point1, point2, point3) {
+	const centerPoint = {
+		x: (point1.x + point2.x + point3.x) / 3,
+		y: (point1.y + point2.y + point3.y) / 3,
+		z: (point1.z + point2.z + point3.z) / 3,
+	};
+
+	return centerPoint;
+}
+
+function calculatePointAwayFromPlane(point1, point2, point3, distance) {
+	const normalVector = calculateNormalVector(point1, point2, point3);
+	const centerPoint = calculateCenterPoint(point1, point2, point3);
+
+	const pointOnPlane = {
+		x: centerPoint.x + normalVector.x * distance,
+		y: centerPoint.y + normalVector.y * distance,
+		z: centerPoint.z + normalVector.z * distance,
+	};
+
+	return pointOnPlane;
+}
+
+function getHandDirection(handLandmarks, switchSide = false) {
+	// get landmarks 0, 5, 17 for palm
+	const palmLandmarks = [handLandmarks[0], handLandmarks[5], handLandmarks[17]];
+
+	const pointOnPalm = calculateCenterPoint(
+		palmLandmarks[0],
+		palmLandmarks[1],
+		palmLandmarks[2]
+	);
+
+	// get point on palm plane
+	const pointAwayFromPlane = calculatePointAwayFromPlane(
+		palmLandmarks[0],
+		palmLandmarks[1],
+		palmLandmarks[2],
+		switchSide ? -10 : 10
+	);
+
+	return {
+		pointOnPalm,
+		pointAwayFromPlane,
+	};
+}
+
 const useGestureRecognition = () => {
 	const [gestureRecognizer, setGestureRecognizer] = useState(null);
 	const [results, setResults] = useState(null);
@@ -35,6 +103,23 @@ const useGestureRecognition = () => {
 
 		createGestureRecognizer();
 	}, [runningMode]); // Run when runningMode changes
+
+	const drawDirection = (pointOnPalm, pointAwayFromPlane) => {
+		const canvasCtx = canvasRef.current.getContext("2d");
+		canvasCtx.beginPath();
+		canvasCtx.moveTo(
+			pointOnPalm.x * canvasCtx.canvas.width,
+			pointOnPalm.y * canvasCtx.canvas.height
+		);
+		canvasCtx.lineTo(
+			pointAwayFromPlane.x * canvasCtx.canvas.width,
+			pointAwayFromPlane.y * canvasCtx.canvas.height
+		);
+		canvasCtx.lineWidth = 5;
+		canvasCtx.strokeStyle = "#0000FF";
+		canvasCtx.stroke();
+		canvasCtx.closePath();
+	};
 
 	const enableCam = (event) => {
 		if (!gestureRecognizer) {
@@ -73,8 +158,6 @@ const useGestureRecognition = () => {
 			nowInMs
 		);
 
-		console.log(predictionResults);
-
 		tempResults = predictionResults;
 
 		setResults(predictionResults);
@@ -103,7 +186,7 @@ const useGestureRecognition = () => {
 			return;
 		}
 
-		if (tempResults.landmarks) {
+		if (tempResults.landmarks && tempResults.landmarks.length > 0) {
 			for (const landmarks of tempResults.landmarks) {
 				drawingUtils.drawConnectors(
 					landmarks,
@@ -117,6 +200,15 @@ const useGestureRecognition = () => {
 					color: "#FF0000",
 					lineWidth: 2,
 				});
+			}
+
+			for (let i = 0; i < tempResults.handednesses.length; i++) {
+				const { pointOnPalm, pointAwayFromPlane } = getHandDirection(
+					tempResults.landmarks[i],
+					tempResults.handednesses[i][0].categoryName === "Left" ? true : false
+				);
+
+				drawDirection(pointOnPalm, pointAwayFromPlane);
 			}
 		}
 		canvasCtx.restore();
