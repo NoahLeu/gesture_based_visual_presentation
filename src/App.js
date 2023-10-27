@@ -1,4 +1,3 @@
-// import CameraStream from "./features/CameraStream";
 import useGestureRecognition from "./features/GestureDetector/GestureDetector";
 
 // function App() {
@@ -19,22 +18,25 @@ const GestureDetectionApp = () => {
 		<div className="relative w-screen h-screen flex flex-col items-center justify-center bg-gray-800">
 			<button
 				id="webcamButton"
-				className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+				className="absolute top-10 left-1/2 -translate-x-1/2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 				onClick={enableCam}
 			>
 				Enable webcam
 			</button>
 			<div className="relative w-1/2 h-1/2 flex justify-center items-center">
-				<video
-					style={{
-						WebkitTransform: "rotateY(180deg)",
-						transform: "rotateY(180deg)",
-					}}
-					className=""
-					ref={videoRef}
-					autoPlay
-					playsInline
-				></video>
+				<div className="w-full h-auto overflow-hidden flex items-center justify-center">
+					<video
+						id="webcam"
+						style={{
+							WebkitTransform: "rotateY(180deg)",
+							transform: "rotateY(180deg)",
+						}}
+						className="w-full h-auto"
+						ref={videoRef}
+						autoPlay
+						playsInline
+					></video>
+				</div>
 				<canvas
 					className="absolute"
 					style={{
@@ -42,8 +44,8 @@ const GestureDetectionApp = () => {
 						transform: "rotateY(180deg)",
 					}}
 					ref={canvasRef}
-					// width="200"
-					// height="200"
+					width={window.innerWidth / 2}
+					height={window.innerHeight / 2}
 				></canvas>
 			</div>
 

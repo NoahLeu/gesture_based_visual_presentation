@@ -26,6 +26,9 @@ const useGestureRecognition = () => {
 					delegate: "GPU",
 				},
 				runningMode: runningMode,
+				numHands: 2,
+				minHandDetectionConfidence: 0.5,
+				minDetectionConfidence: 0.5,
 			});
 			setGestureRecognizer(recognizer);
 		};
@@ -53,7 +56,7 @@ const useGestureRecognition = () => {
 		});
 	};
 
-	let lastVideoTime = -1;
+	// let lastVideoTime = -1;
 
 	async function predictWebcam() {
 		const webcamElement = videoRef.current;
@@ -64,7 +67,7 @@ const useGestureRecognition = () => {
 		let nowInMs = Date.now();
 		let tempResults = null;
 		// if (webcamElement.currentTime !== lastVideoTime) {
-		lastVideoTime = webcamElement.currentTime;
+		// lastVideoTime = webcamElement.currentTime;
 		const predictionResults = gestureRecognizer.recognizeForVideo(
 			webcamElement,
 			nowInMs
@@ -87,10 +90,14 @@ const useGestureRecognition = () => {
 		);
 		const drawingUtils = new DrawingUtils(canvasCtx);
 
-		canvasRef.current.style.height = window.innerHeight / 2 + "px";
-		webcamElement.style.height = window.innerHeight / 2 + "px";
-		canvasRef.current.style.width = window.innerWidth / 2 + "px";
-		webcamElement.style.width = window.innerWidth / 2 + "px";
+		canvasRef.current.style.height =
+			document.getElementById("webcam").offsetHeight + "px";
+		canvasRef.current.style.width =
+			document.getElementById("webcam").offsetWidth + "px";
+		// canvasRef.current.style.height = window.innerHeight / 2 + "px";
+		// webcamElement.style.height = window.innerHeight / 2 + "px";
+		// canvasRef.current.style.width = window.innerWidth / 2 + "px";
+		// webcamElement.style.width = window.innerWidth / 2 + "px";
 
 		if (!tempResults) {
 			return;
