@@ -1,14 +1,73 @@
 # Gesture Based Visual Presentation
 
-# Getting Started with Create React App
+## Introduction
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a web application that allows users to stream a live augmented reality presentation of their webcam using gesture tracking. The application is streaming video from the user's webcam and using a machine learning model to track the user's hand gestures. The user can choose between different 3D models to display on the screen and can control the model's position, rotation, and scale using their hand gestures.
+This project is based on the mediapipe library and the hand tracking module. The 3D models are loaded using the D3.js library.
 
-## Available Scripts
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/)
+- [npm](https://www.npmjs.com/)
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/NoahLeu/gesture_based_visual_presentation.git
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Start the application
+   ```sh
+   npm run start
+   ```
+
+## Usage
+
+1. Open the application in your browser at [http://localhost:3000](http://localhost:3000)
+2. Allow the application to access your webcam when prompted
+3. Choose a 3D model from the menu (coming soon)
+4. Use your hand gestures to control the model's position, rotation, and scale
+
+### Hand Gestures
+
+currently supported gestures:
+
+#### Left Hand
+
+- **Open Hand** - Scale the model up (hold to continue scaling)
+- **Closed Fist** - Scale the model down (hold to continue scaling)
+
+#### Right Hand
+
+- **Closed Fist** - Move the model and release by opening your hand (hold to continue moving)
+
+## Roadmap
+
+1. Add more 3D models to choose from
+2. Add more hand gestures to control the models
+3. Add more features to the models (e.g. color, texture, etc.)
+4. ...
+
+## Contributing
+
+This project was created with love by [Noah Leu](https://github.com/NoahLeu) and [Noah Garkisch](https://github.com/NNG0)
+as part of the Visualisation course at the University of Rostock. If you have any questions or suggestions, feel free to contact us or open an issue.
+
+## Development
+
+This project was bootstrapped with [Create React App](https://https://github.com/facebook/create-react-app).
+
+### Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+#### `npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
@@ -16,12 +75,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
+#### `npm test`
 
 Launches the test runner in the interactive watch mode.\
+Currently there are no major tests implemented.
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+#### `npm run build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -30,43 +90,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
