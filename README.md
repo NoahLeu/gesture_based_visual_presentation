@@ -5,6 +5,8 @@
 This project is a web application that allows users to stream a live augmented reality presentation of their webcam using gesture tracking. The application is streaming video from the user's webcam and using a machine learning model to track the user's hand gestures. The user can choose between different 3D models to display on the screen and can control the model's position, rotation, and scale using their hand gestures.
 This project is based on the mediapipe library and the hand tracking module. The 3D models are loaded using the D3.js library.
 
+The project is still in development and is not yet ready for production.
+
 ## Getting Started
 
 ### Prerequisites
@@ -30,9 +32,10 @@ This project is based on the mediapipe library and the hand tracking module. The
 ## Usage
 
 1. Open the application in your browser at [http://localhost:3000](http://localhost:3000)
-2. Allow the application to access your webcam when prompted
-3. Choose a 3D model from the menu (coming soon)
-4. Use your hand gestures to control the model's position, rotation, and scale
+2. Click the enable camera button
+3. Allow the application to access your webcam when prompted
+4. Choose a 3D model from the menu (coming soon)
+5. Use your hand gestures to control the model's position, rotation, and scale
 
 ### Hand Gestures
 
@@ -56,7 +59,7 @@ currently supported gestures:
 
 ## Contributing
 
-This project was created with love by [Noah Leu](https://github.com/NoahLeu) and [Noah Garkisch](https://github.com/NNG0)
+This project is being created by [Noah Leu](https://github.com/NoahLeu) and [Noah Garkisch](https://github.com/NNG0)
 as part of the Visualisation course at the University of Rostock. If you have any questions or suggestions, feel free to contact us or open an issue.
 
 ## Development
