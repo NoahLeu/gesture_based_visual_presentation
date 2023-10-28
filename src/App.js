@@ -1,4 +1,6 @@
+import { useState } from "react";
 import useGestureRecognition from "./features/GestureDetector/GestureDetector";
+import ObjectLayer from "./features/ObjectLayer/ObjectLayer";
 
 // function App() {
 // 	return (
@@ -11,19 +13,32 @@ import useGestureRecognition from "./features/GestureDetector/GestureDetector";
 // export default App;
 
 const GestureDetectionApp = () => {
-	const { videoRef, canvasRef, gestureOutputRef, enableCam } =
-		useGestureRecognition();
+	const [hasCamEnabled, setHasCamEnabled] = useState(false);
+
+	const {
+		videoRef,
+		canvasRef,
+		gestureOutputRef,
+		enableCam,
+		objectPosition,
+		objectZoom,
+	} = useGestureRecognition();
+
+	const handleEnableCam = () => {
+		enableCam();
+		setHasCamEnabled(true);
+	};
 
 	return (
 		<div className="relative w-screen h-screen flex flex-col items-center justify-center bg-gray-800">
 			<button
 				id="webcamButton"
 				className="absolute top-10 left-1/2 -translate-x-1/2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-				onClick={enableCam}
+				onClick={handleEnableCam}
 			>
 				Enable webcam
 			</button>
-			<div className="relative w-1/2 h-1/2 flex justify-center items-center">
+			<div className="relative w-1/2 h-1/2 flex justify-center items-center overflow-hidden">
 				<div className="w-full h-auto overflow-hidden flex items-center justify-center">
 					<video
 						id="webcam"
@@ -49,6 +64,15 @@ const GestureDetectionApp = () => {
 					// width={document && document.getElementById("webcam").offsetWidth}
 					// height={ document ? document.getElementById("webcam").offsetHeight : window.innerHeight / 2}
 				></canvas>
+				{
+					// if webcam enabled
+					hasCamEnabled && (
+						<ObjectLayer
+							objectPosition={objectPosition}
+							objectZoom={objectZoom}
+						/>
+					)
+				}
 			</div>
 
 			<div className="absolute bottom-0 left-0 w-full flex flex-col items-center justify-center">

@@ -67,7 +67,13 @@ function getHandDirection(handLandmarks, switchSide = false) {
 		switchSide ? -10 : 10
 	);
 
+	const angle = Math.atan2(
+		pointAwayFromPlane.y - pointOnPalm.y,
+		pointAwayFromPlane.x - pointOnPalm.x
+	);
+
 	return {
+		angle,
 		pointOnPalm,
 		pointAwayFromPlane,
 	};
@@ -78,6 +84,14 @@ const useGestureRecognition = () => {
 	const [results, setResults] = useState(null);
 	const [runningMode, setRunningMode] = useState("VIDEO");
 	const [webcamRunning, setWebcamRunning] = useState(false);
+	const [objectPosition, setObjectPosition] = useState({
+		x: 0,
+		y: 0,
+		z: 0,
+		angle: 0,
+	});
+
+	const [objectZoom, setObjectZoom] = useState(100);
 
 	const videoRef = useRef(null);
 	const canvasRef = useRef(null);
@@ -151,8 +165,6 @@ const useGestureRecognition = () => {
 		}
 		let nowInMs = Date.now();
 		let tempResults = null;
-		// if (webcamElement.currentTime !== lastVideoTime) {
-		// lastVideoTime = webcamElement.currentTime;
 		const predictionResults = gestureRecognizer.recognizeForVideo(
 			webcamElement,
 			nowInMs
@@ -161,7 +173,6 @@ const useGestureRecognition = () => {
 		tempResults = predictionResults;
 
 		setResults(predictionResults);
-		// }
 
 		const canvasCtx = canvasRef.current.getContext("2d");
 		canvasCtx.save();
@@ -177,10 +188,6 @@ const useGestureRecognition = () => {
 			document.getElementById("webcam").offsetHeight + "px";
 		canvasRef.current.style.width =
 			document.getElementById("webcam").offsetWidth + "px";
-		// canvasRef.current.style.height = window.innerHeight / 2 + "px";
-		// webcamElement.style.height = window.innerHeight / 2 + "px";
-		// canvasRef.current.style.width = window.innerWidth / 2 + "px";
-		// webcamElement.style.width = window.innerWidth / 2 + "px";
 
 		if (!tempResults) {
 			return;
@@ -203,12 +210,48 @@ const useGestureRecognition = () => {
 			}
 
 			for (let i = 0; i < tempResults.handednesses.length; i++) {
-				const { pointOnPalm, pointAwayFromPlane } = getHandDirection(
+				const { pointOnPalm, pointAwayFromPlane, angle } = getHandDirection(
 					tempResults.landmarks[i],
 					tempResults.handednesses[i][0].categoryName === "Left" ? true : false
 				);
 
 				drawDirection(pointOnPalm, pointAwayFromPlane);
+
+				if (
+					tempResults.handednesses[i][0].categoryName === "Left" &&
+					tempResults.handednesses[i][0].score > 0.7 &&
+					tempResults.gestures.length > 0 &&
+					tempResults.gestures[0][0].categoryName === "Closed_Fist"
+				) {
+					// setObjectPosition({
+					// 	x: pointAwayFromPlane.x,
+					// 	y: pointAwayFromPlane.y,
+					// 	z: pointAwayFromPlane.z,
+					// 	angle,
+					// });
+					setObjectPosition({
+						x: pointOnPalm.x,
+						y: pointOnPalm.y,
+						z: pointOnPalm.z,
+						angle,
+					});
+				}
+
+				if (
+					tempResults.handednesses[i][0].categoryName === "Right" &&
+					tempResults.handednesses[i][0].score > 0.6 &&
+					tempResults.gestures.length > 0
+				) {
+					if (tempResults.gestures[0][0].categoryName === "Closed_Fist") {
+						setObjectZoom((objectZoom) => objectZoom + 3);
+
+						console.log(objectZoom);
+					}
+
+					if (tempResults.gestures[0][0].categoryName === "Open_Palm") {
+						setObjectZoom((objectZoom) => objectZoom - 3);
+					}
+				}
 			}
 		}
 		canvasCtx.restore();
@@ -233,10 +276,9 @@ const useGestureRecognition = () => {
 		canvasRef,
 		gestureOutputRef,
 		enableCam,
-		// handleClick,
+		objectPosition,
+		objectZoom,
 	};
 };
-
-// modelAssetPath: "/models/gesture_recognizer.task",
 
 export default useGestureRecognition;
