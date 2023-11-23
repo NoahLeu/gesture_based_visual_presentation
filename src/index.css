@@ -15,3 +15,61 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
 }
+
+.loader {
+	width: 70px;
+	height: 70px;
+	display: inline-block;
+	position: relative;
+}
+
+.loader.loader-huge {
+	width: 120px;
+	height: 120px;
+}
+
+.loader.loader-huge::after,
+.loader.loader-huge::before {
+	width: 120px;
+	height: 120px;
+	border: 6px solid #fff;
+}
+
+.loader::after,
+.loader::before {
+	content: "";
+	box-sizing: border-box;
+	width: 70px;
+	height: 70px;
+	border-radius: 50%;
+	border: 3px solid #fff;
+	position: absolute;
+	left: 0;
+	top: 0;
+	animation: animloader 2s linear infinite;
+}
+.loader::after {
+	animation-delay: 1s;
+	opacity: 0;
+}
+
+@keyframes animloader {
+	0% {
+		transform: scale(0);
+		opacity: 1;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 0;
+	}
+}
+
+@layer components {
+	.btn-primary {
+		@apply bg-accent hover:bg-accent/75 text-primary hover:text-white  text-lg font-bold py-2 px-4 rounded-xl transition-all duration-200 ease-in-out;
+	}
+
+	.btn-secondary {
+		@apply bg-primary hover:bg-primary/75 text-accent hover:text-green text-lg font-bold pt-1 pb-2 px-4 rounded-lg transition-all duration-200 ease-in-out;
+	}
+}
