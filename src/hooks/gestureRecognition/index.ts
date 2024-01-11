@@ -9,8 +9,20 @@ import {
 	calculateCenterPoint,
 	calculatePointAwayFromPlane,
 } from "../../utils/vectorCalculations";
+import { gestureConfig } from "../../config/gestureConfig";
 
 type RunningMode = "IMAGE" | "VIDEO";
+
+const handToMirroredHand = (hand: string) => {
+	switch (hand) {
+		case "Left":
+			return "Right";
+		case "Right":
+			return "Left";
+		default:
+			return "Both";
+	}
+};
 
 function getHandDirection(handLandmarks: any[], switchSide = false) {
 	// get landmarks 0, 5, 17 for palm
@@ -223,10 +235,13 @@ const useGestureRecognition = () => {
 				// drawDirection(pointOnPalm, pointAwayFromPlane);
 
 				if (
-					tempResults.handedness[i][0].categoryName === "Left" &&
-					tempResults.handedness[i][0].score > 0.7 &&
+					tempResults.handedness[i][0].categoryName ===
+						handToMirroredHand(gestureConfig.interactions.move.hand) &&
+					tempResults.handedness[i][0].score >
+						(gestureConfig.interactions.move.confidence ?? 0.7) &&
 					tempResults.gestures.length > 0 &&
-					tempResults.gestures[0][0].categoryName === "Closed_Fist"
+					tempResults.gestures[0][0].categoryName ===
+						gestureConfig.interactions.move.gesture
 				) {
 					// setObjectPosition({
 					// 	x: pointAwayFromPlane.x,
@@ -242,16 +257,25 @@ const useGestureRecognition = () => {
 					});
 				}
 
+				// TODO: make this not depend on the zoom in hand to be the same as the zoom out hand
 				if (
-					tempResults.handedness[i][0].categoryName === "Right" &&
-					tempResults.handedness[i][0].score > 0.6 &&
+					tempResults.handedness[i][0].categoryName ===
+						handToMirroredHand(gestureConfig.interactions.zoom_in.hand) &&
+					tempResults.handedness[i][0].score >
+						(gestureConfig.interactions.zoom_in.confidence ?? 0.7) &&
 					tempResults.gestures.length > 0
 				) {
-					if (tempResults.gestures[0][0].categoryName === "Open_Palm") {
+					if (
+						tempResults.gestures[0][0].categoryName ===
+						gestureConfig.interactions.zoom_in.gesture
+					) {
 						setObjectZoom((objectZoom) => objectZoom + 5);
 					}
 
-					if (tempResults.gestures[0][0].categoryName === "Closed_Fist") {
+					if (
+						tempResults.gestures[0][0].categoryName ===
+						gestureConfig.interactions.zoom_out.gesture
+					) {
 						setObjectZoom((objectZoom) =>
 							objectZoom - 5 > 10 ? objectZoom - 5 : 10
 						);
@@ -259,29 +283,49 @@ const useGestureRecognition = () => {
 				}
 
 				if (
-					tempResults.handedness[i][0].categoryName === "Right" &&
-					tempResults.handedness[i][0].score > 0.6 &&
+					tempResults.handedness[i][0].categoryName ===
+						handToMirroredHand(
+							gestureConfig.interactions.rotate_x_positive.hand
+						) &&
+					tempResults.handedness[i][0].score >
+						(gestureConfig.interactions.rotate_x_positive.confidence ?? 0.7) &&
 					tempResults.gestures.length > 0
 				) {
-					if (tempResults.gestures[0][0].categoryName === "Thumb_Up") {
+					if (
+						tempResults.gestures[0][0].categoryName ===
+						gestureConfig.interactions.rotate_x_positive.gesture
+					) {
 						setObjectRotationX((objectRotationX) => objectRotationX + 10);
 					}
 
-					if (tempResults.gestures[0][0].categoryName === "Thumb_Down") {
+					if (
+						tempResults.gestures[0][0].categoryName ===
+						gestureConfig.interactions.rotate_x_negative.gesture
+					) {
 						setObjectRotationX((objectRotationX) => objectRotationX - 10);
 					}
 				}
 
 				if (
-					tempResults.handedness[i][0].categoryName === "Left" &&
-					tempResults.handedness[i][0].score > 0.6 &&
+					tempResults.handedness[i][0].categoryName ===
+						handToMirroredHand(
+							gestureConfig.interactions.rotate_y_positive.hand
+						) &&
+					tempResults.handedness[i][0].score >
+						(gestureConfig.interactions.rotate_y_positive.confidence ?? 0.7) &&
 					tempResults.gestures.length > 0
 				) {
-					if (tempResults.gestures[0][0].categoryName === "Thumb_Up") {
+					if (
+						tempResults.gestures[0][0].categoryName ===
+						gestureConfig.interactions.rotate_y_positive.gesture
+					) {
 						setObjectRotationY((objectRotationY) => objectRotationY + 10);
 					}
 
-					if (tempResults.gestures[0][0].categoryName === "Thumb_Down") {
+					if (
+						tempResults.gestures[0][0].categoryName ===
+						gestureConfig.interactions.rotate_y_negative.gesture
+					) {
 						setObjectRotationY((objectRotationY) => objectRotationY - 10);
 					}
 				}

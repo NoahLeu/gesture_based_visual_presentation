@@ -5,6 +5,7 @@ import ObjectLayer from "../ObjectLayer";
 import Logo from "../Logo";
 import ObjectSelectionCard from "../ObjectSelectionCard";
 import { useModelState } from "../../context";
+import { gestureConfig } from "../../config/gestureConfig";
 
 const customScrollIntoView = (id: string) => {
 	const selectedObjectElement = document.getElementById(id);
@@ -38,7 +39,13 @@ export default function PresentationScreen() {
 		useState<boolean>(false);
 	const gestureTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-	const { modelVisibility, setModelVisibility, setCurrentModelIndex, currentModelIndex, availableModels } = useModelState();
+	const {
+		modelVisibility,
+		setModelVisibility,
+		setCurrentModelIndex,
+		currentModelIndex,
+		availableModels,
+	} = useModelState();
 
 	const handleStartPresentation = () => {
 		setHasStartedLoadingPresentation(true);
@@ -59,11 +66,16 @@ export default function PresentationScreen() {
 			clearTimeout(gestureTimeoutRef.current);
 		}
 
-		if (gestureDetectionOutputLeft === "Victory") {
+		if (
+			gestureDetectionOutputLeft ===
+			gestureConfig.interactions.tracking_visible.gesture
+		) {
 			// Set a new timeout
 			gestureTimeoutRef.current = setTimeout(() => {
 				// This function will run after 2 seconds
 				// Toggle the view only if the currentGesture has not changed
+				console.log("new timeout with prev: ", showTrackingInformation);
+
 				setShowTrackingInformation((prev) => !prev);
 			}, 2000);
 		}
@@ -83,7 +95,7 @@ export default function PresentationScreen() {
 		} else {
 			setCurrentModelIndex(0);
 			customScrollIntoView(getModelName(0));
-		};
+		}
 	};
 
 	const handlePreviousModel = () => {
@@ -93,7 +105,7 @@ export default function PresentationScreen() {
 		} else {
 			setCurrentModelIndex(availableModels.length - 1);
 			customScrollIntoView(getModelName(availableModels.length - 1));
-		};
+		}
 	};
 
 	const handleSelectModel = (index: number) => {
@@ -112,12 +124,13 @@ export default function PresentationScreen() {
 					id={`model-${index}`}
 					isActive={index === currentModelIndex}
 					selectObject={() => handleSelectModel(index)}
+					// TODO: correct model name src
 					name={availableModels[index].name}
 					src="/3d-cube.png"
 				/>
 			);
 		});
-	}
+	};
 
 	return (
 		<div className="w-screen h-screen overflow-hidden grid grid-cols-5 items-center justify-center bg-primary">
@@ -177,7 +190,7 @@ export default function PresentationScreen() {
 								className="btn-primary"
 								onClick={() => setModelVisibility(!modelVisibility)}
 							>
-								{ modelVisibility ? "Hide Model" : "Show Model"}
+								{modelVisibility ? "Hide Model" : "Show Model"}
 							</button>
 							<button
 								className="btn-primary"
@@ -209,7 +222,7 @@ export default function PresentationScreen() {
 									style={{
 										WebkitTransform: "rotateY(180deg)",
 										transform: "rotateY(180deg)",
-										opacity: showTrackingInformation ? "object-1" : "0",
+										opacity: showTrackingInformation ? "1" : "0",
 									}}
 									ref={canvasRef}
 									width={videoRef.current ? videoRef.current.clientWidth : 0}

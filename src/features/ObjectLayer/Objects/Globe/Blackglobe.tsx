@@ -31,13 +31,13 @@ const drawGlobe = (
 };
 
 export default function BlackGlobe({
-                                  objectPosition,
-                                  objectZoom,
-                                  objectRotationX,
-                                  objectRotationY,
-                                  nodeRef,
-                                  drawModel,
-                              }: ModelProps) {
+                                       objectPosition,
+                                       objectZoom,
+                                       objectRotationX,
+                                       objectRotationY,
+                                       nodeRef,
+                                       drawModel,
+                                   }: ModelProps) {
     useEffect(() => {
         if (nodeRef.current) {
             drawGlobe(nodeRef, objectRotationX, objectRotationY, drawModel);
@@ -60,6 +60,6 @@ export default function BlackGlobe({
                 width: "200px",
                 height: "200px",
             }}
-        ></div>
+        />
     );
 }

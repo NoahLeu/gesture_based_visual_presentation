@@ -44,22 +44,24 @@ export default function Globe({
         }
     }, [nodeRef, objectRotationX, objectRotationY]);
 
-    return (
-        <div
-            id="map"
-            ref={nodeRef}
-            className="absolute z-20"
-            style={{
-                // objetPosition as bottom side of div
-                top: objectPosition.y * 100 + "%",
-                right: objectPosition.x * 100 + "%",
-                transform: `translate(50%, -50%) scale(${
-                    objectZoom / 100
-                }) rotateY(180deg)`,
-                transformOrigin: "center",
-                width: "200px",
-                height: "200px",
-            }}
-        ></div>
-    );
+	return (
+		<div
+			id="map"
+			ref={nodeRef}
+			className="absolute z-20"
+			style={{
+				// objetPosition as bottom side of div
+				top: objectPosition.y * 100 + "%",
+				right: objectPosition.x * 100 + "%",
+				transform: `translate(50%, -50%) scale(${
+					objectZoom / 100
+				}) rotateY(180deg)`,
+				transformOrigin: "center",
+				width: "200px",
+				height: "200px",
+				// animate transform changes
+				transition: "all 0.12s ease-in-out",
+			}}
+		/>
+	);
 }

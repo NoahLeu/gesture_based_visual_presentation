@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import {useModelState} from "../../context";
 import {RefObject, useRef} from "react";
+import {useModelState} from "../../context";
 
 export type ObjectLayerProps = {
     objectPosition: { x: number; y: number; z: number; angle: number };
@@ -18,12 +18,24 @@ export interface ModelProps {
     drawModel: any;
 }
 
+export interface twoD_ModelProps {
+    objectPosition: { x: number; y: number; z: number; angle: number };
+    objectZoom: number;
+    nodeRef: RefObject<HTMLDivElement>;
+}
+
+export interface iFrameProps {
+    objectPosition: { x: number; y: number; z: number; angle: number };
+    objectZoom: number;
+    nodeRef: RefObject<HTMLIFrameElement>;
+}
+
 export interface IDrawModel {
     map: d3.Selection<SVGGElement, unknown, null, undefined>;
     path: d3.GeoPath<any, d3.GeoPermissibleObjects>;
 }
 
-const setupMap = (nodeRef: RefObject<HTMLDivElement>, width: number, height: number) => {
+export const setupMap = (nodeRef: RefObject<HTMLDivElement>, width: number, height: number) => {
     const svg = d3
         .select(nodeRef.current)
         .append("svg")
@@ -66,8 +78,8 @@ export default function ObjectLayer({
                                         objectRotationY,
                                     }: ObjectLayerProps) {
     const {modelVisibility, currentModelIndex, availableModels} = useModelState();
-    const nodeRef = useRef<HTMLDivElement>(null);
-    let CurrentModel = availableModels[currentModelIndex];
+    const nodeRef = useRef<HTMLDivElement & HTMLIFrameElement>(null);
+    let CurrentModel = availableModels[currentModelIndex].model;
 
     return (
         <div className="w-full h-full absolute z-20">
