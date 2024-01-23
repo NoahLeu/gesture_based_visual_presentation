@@ -8,6 +8,7 @@ export type GestureConfig = {
 		rotate_y_positive: Interaction;
 		rotate_y_negative: Interaction;
 		tracking_visible: Interaction;
+		pointing: Interaction;
 	};
 };
 

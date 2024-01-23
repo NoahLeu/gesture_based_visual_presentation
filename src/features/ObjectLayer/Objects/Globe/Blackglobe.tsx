@@ -27,7 +27,14 @@ const drawGlobe = (
         .attr('fill', 'black')
         .style('stroke', 'white')
         .style('stroke-width', 0.3)
-        .style('opacity', 0.8);
+        .style('opacity', 0.8)
+        // @ts-ignore
+        .on('click', (event, d) => {
+            // This function will be executed when a country is clicked
+            // 'd' contains the data of the clicked country
+            console.log('You clicked on country: ', d.properties.name);
+        });
+
 };
 
 export default function BlackGlobe({
@@ -55,7 +62,7 @@ export default function BlackGlobe({
                 right: objectPosition.x * 100 + "%",
                 transform: `translate(50%, -50%) scale(${
                     objectZoom / 100
-                }) rotateY(180deg)`,
+                })`,
                 transformOrigin: "center",
                 width: "200px",
                 height: "200px",

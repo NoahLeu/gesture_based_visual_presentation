@@ -31,7 +31,34 @@ export default function PresentationScreen() {
 		objectZoom,
 		objectRotationX,
 		objectRotationY,
+		pointingPosition
 	} = useGestureRecognition();
+
+	const sideBarRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		// Get the element at the pointing position
+
+		if (sideBarRef.current === null) return;
+		const x = (window.innerWidth - (pointingPosition.x + window.scrollX) * 1000) - sideBarRef.current!.clientWidth / 2;
+		const y = (pointingPosition.y + window.scrollY) * 1000;
+
+		const element = document.elementFromPoint(x, y) as HTMLElement;
+
+		console.log(x, y);
+		// Check if the element is not null and is one of the countries
+		if (element) {
+			// Execute the click event
+			const event = new MouseEvent('click', {
+				view: window,
+				bubbles: true,
+				cancelable: true
+			});
+			console.log("element: ",element.getBoundingClientRect(), element)
+			// Dispatch the event
+			element.dispatchEvent(event);
+		}
+	}, [pointingPosition]);
 
 	const [showTrackingInformation, setShowTrackingInformation] =
 		useState<boolean>(true);
@@ -133,11 +160,11 @@ export default function PresentationScreen() {
 	};
 
 	return (
-		<div className="w-screen h-screen overflow-hidden grid grid-cols-5 items-center justify-center bg-primary">
+		<div className="w-screen h-screen overflow-hidden grid grid-cols-5 items-center justify-center bg-primary relative z-0">
 			{hasEnvironmentLoaded ? (
 				<>
 					{/* side bar */}
-					<div className=" relative col-span-1 grid grid-cols-1 grid-rows-5 grid-flow-row gap-y-6 items-center justify-between bg-accent h-full max-h-full overflow-y-scroll p-6">
+					<div id={"sideBar"} ref={sideBarRef} className=" relative col-span-1 grid grid-cols-1 grid-rows-5 grid-flow-row gap-y-6 items-center justify-between bg-accent h-full max-h-full overflow-y-scroll p-6">
 						{/* model selection */}
 						<div className="w-full flex flex-col row-span-4 max-h-full gap-y-4">
 							<div className="w-full flex items-center justify-between">
@@ -173,7 +200,7 @@ export default function PresentationScreen() {
 						</div>
 					</div>
 					{/* main presentation view */}
-					<div className="col-span-4 flex flex-col items-start justify-start w-2/3 h-full mx-auto">
+					<div className="col-span-4 flex flex-col items-start justify-start w-2/3 h-full mx-auto z-10">
 						{/* top bar */}
 						<div className="w-full flex items-center justify-center py-6">
 							<Logo

@@ -4,12 +4,13 @@ import {
 	DrawingUtils,
 } from "@mediapipe/tasks-vision";
 import { useEffect, useRef, useState } from "react";
-import { Point } from "../../types/point";
+import {Point, Point2D} from "../../types/point";
 import {
 	calculateCenterPoint,
 	calculatePointAwayFromPlane,
 } from "../../utils/vectorCalculations";
 import { gestureConfig } from "../../config/gestureConfig";
+import {debounce} from "../../utils/debounce";
 
 type RunningMode = "IMAGE" | "VIDEO";
 
@@ -76,6 +77,11 @@ const useGestureRecognition = () => {
 	const [objectZoom, setObjectZoom] = useState<number>(100);
 	const [objectRotationX, setObjectRotationX] = useState<number>(0);
 	const [objectRotationY, setObjectRotationY] = useState<number>(0);
+	const [pointingPosition, setPointingPosition] = useState<Point2D>({
+		x: 0,
+		y: 0,
+	});
+	const debouncedSetPointingPosition = debounce(setPointingPosition, 100);
 
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -329,6 +335,25 @@ const useGestureRecognition = () => {
 						setObjectRotationY((objectRotationY) => objectRotationY - 10);
 					}
 				}
+
+				// pointing
+				if (
+					tempResults.handedness[i][0].categoryName ===
+						handToMirroredHand(gestureConfig.interactions.pointing.hand) &&
+					tempResults.handedness[i][0].score >
+						(gestureConfig.interactions.pointing.confidence ?? 0.7) &&
+					tempResults.gestures.length > 0 &&
+					tempResults.gestures[0][0].categoryName ===
+						gestureConfig.interactions.pointing.gesture
+				) {
+					canvasRef.current.getBoundingClientRect();
+					const fingerTip = tempResults.landmarks[i][8];
+					//console.log(fingerTip);
+					debouncedSetPointingPosition({
+						x: fingerTip.x,
+						y: fingerTip.y,
+					});
+				}
 			}
 		}
 		canvasCtx.restore();
@@ -419,6 +444,7 @@ const useGestureRecognition = () => {
 		objectZoom,
 		objectRotationX,
 		objectRotationY,
+		pointingPosition
 	};
 };
 

@@ -1,6 +1,6 @@
 import { GestureConfig } from "../types/gestureConfig";
 
-// as typescript obejct:
+// as typescript object:
 export const gestureConfig: GestureConfig = {
 	interactions: {
 		move: {
@@ -37,5 +37,9 @@ export const gestureConfig: GestureConfig = {
 			hand: "Right",
 			gesture: "Victory",
 		},
+		pointing: {
+			hand: "Right",
+			gesture: "Pointing_Up",
+		}
 	},
 };
